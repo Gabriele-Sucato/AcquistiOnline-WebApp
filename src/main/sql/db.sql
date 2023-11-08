@@ -1,32 +1,47 @@
--- Tabella dei Clienti
-CREATE TABLE Clienti (
-    CodiceCliente INT PRIMARY KEY,
-    Cognome VARCHAR(50),
-    Nome VARCHAR(50),
-    -- Altri campi dati del cliente, se necessario
-);
- 
--- Tabella degli Articoli
-CREATE TABLE Articoli (
-    CodiceArticolo INT PRIMARY KEY,
-    NomeArticolo VARCHAR(100),
-    Prezzo DECIMAL(10, 2),
-    Descrizione TEXT,
-    QuantitaDisponibile INT,
 
+ CREATE TABLE IF NOT EXISTS clients (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code_client VARCHAR(4) NOT NULL UNIQUE,
+    name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL
 );
- 
--- Tabella degli Acquisti
-CREATE TABLE Acquisti (
-    CodiceOperazione INT PRIMARY KEY,
-    CodiceCliente INT,
-    CodiceArticolo INT,
-    TipoPagamento VARCHAR(20),
-    QuantitaAcquistata INT,
-    FOREIGN KEY (CodiceCliente) REFERENCES Clienti(CodiceCliente),
-    FOREIGN KEY (CodiceArticolo) REFERENCES Articoli(CodiceArticolo)
+
+CREATE TABLE IF NOT EXISTS articles (
+    code_article VARCHAR(4) PRIMARY KEY,
+    article_name VARCHAR(50) NOT NULL,
+    price DECIMAL(8, 2) NOT NULL,
+    description TEXT,
+    available_qty SMALLINT NOT NULL
 );
- 
+
+CREATE TABLE IF NOT EXISTS warehouses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    available_qty SMALLINT NOT NULL,
+    code_article VARCHAR(4) NOT NULL,
+    FOREIGN KEY (code_article) REFERENCES articles(code_article)
+);
+
+CREATE TABLE IF NOT EXISTS purchases (
+    operation_code INT AUTO_INCREMENT PRIMARY KEY,
+    code_client VARCHAR(4) NOT NULL,
+    code_article VARCHAR(4) NOT NULL,
+    payment_type VARCHAR(20),
+    purchase_qty SMALLINT NOT NULL,
+    FOREIGN KEY (code_client) REFERENCES clients(code_client),
+    FOREIGN KEY (code_article) REFERENCES articles(code_article)
+);
+
+CREATE TABLE IF NOT EXISTS carts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code_client VARCHAR(4) NOT NULL,
+    payment_method VARCHAR(50),
+    article_qty SMALLINT,
+    code_article VARCHAR(4),
+    FOREIGN KEY (code_client) REFERENCES clients(code_client),
+    FOREIGN KEY (code_article) REFERENCES articles(code_article)
+);
+
+
 
 -- CREATE VIEW Carrello AS
 -- SELECT
