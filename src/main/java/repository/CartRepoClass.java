@@ -1,49 +1,75 @@
 package main.java.repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.*;
 import main.java.model.Cart;
 import main.java.model.Article;
 
 public class CartRepoClass implements CartRepository{
 
-    private Map<Integer,Cart> carts = new HashMap<Integer,Cart>();
+    private Map<String,Cart> carts= new HashMap<>();
 
     @Override
-    public void addItem(Article article, int quantity, int id) {
-       Cart cart = carts.get(id);
-       if (cart == null){
-
-        cart = new Cart();
-        carts.put(id, cart);
-       }
-       cart.addItem(article, quantity, id);
-        throw new UnsupportedOperationException("Unimplemented method 'addItem'");
+    public Cart findCartByClientCode(String clientCode) {
+    return carts.get(clientCode); 
     }
 
     @Override
-    public void removeItem(Article article) {
-        
-        throw new UnsupportedOperationException("Unimplemented method 'removeItem'");
+    public void saveCart(Cart cart) {
+        carts.put(cart.getNameCl(), cart);
     }
 
     @Override
-    public void updateQuantity(Article article, int newQuantity) {
-        
-        throw new UnsupportedOperationException("Unimplemented method 'updateQuantity'");
+    public void updateCart(Cart cart) {
+        // Aggiorna il carrello nel repository, se necessario
+        // (ad esempio, se si utilizza un database)
+        // Non è necessario per l'implementazione in memoria con Map
+  
     }
 
     @Override
-    public void clearCart() {
-        
-        throw new UnsupportedOperationException("Unimplemented method 'clearCart'");
+    public void addItem(Article article, int quantity, String clientCode) {
+        Cart cart= carts.get(clientCode);
+        if(cart==null){
+            cart=new Cart();
+            cart.setNameCl(clientCode);
+            carts.put(clientCode,cart);
+        }  
+        cart.addArticle(article, quantity);
     }
 
     @Override
-    public void listArticle(List<Article> articles) {
-       
-        throw new UnsupportedOperationException("Unimplemented method 'listArticle'");
+    public void removeItem(Article article, String clientCode) {
+        Cart cart= carts.get(clientCode);
+        if (cart != null){
+            cart.getArticles().remove(a -> a.getNameArticle().equals(article.getNameArticle()));
+        }    
     }
-    
+
+    @Override
+    public void updateQuantity(Article article, int newQuantity, String clientCode) {
+        Cart cart = carts.get(clientCode);
+        if (cart != null) {
+            for (Article existingArticle : cart.getArticles()) {
+                if (existingArticle.getNameArticle().equals(article.getNameArticle())) {
+                    existingArticle.setQuantity(newQuantity);
+                    break;
+                }
+            }
+        }
+ }
+
+    @Override
+    public void clearCart(String clientCode) {
+        carts.remove(clientCode);
+    }
+
+    @Override
+    public void listArticle(List<Article> articles, String clientCode) {
+        Cart cart = carts.get(clientCode);
+        if (cart != null) {
+            articles.addAll(cart.getArticles());
+        }
+    }
+
+
 }
