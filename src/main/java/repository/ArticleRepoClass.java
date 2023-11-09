@@ -16,7 +16,6 @@ public class ArticleRepoClass implements ArticleRepository {
 
     @Override
     public Article findArticleByCode(String code) {
-
         String query = "SELECT * FROM articles WHERE code_article = ?";
         try (Connection connection = DatabaseConfig.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -42,7 +41,6 @@ public class ArticleRepoClass implements ArticleRepository {
 
     @Override
     public void saveArticle(Article article) {
-
         String query = "INSERT INTO articles (code_article, article_name, price, description, available_qty) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConfig.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -62,7 +60,6 @@ public class ArticleRepoClass implements ArticleRepository {
 
     @Override
     public void updateArticle(Article article) {
-
         String query = "UPDATE articles SET article_name = ?, price = ?, description = ?, available_qty = ? WHERE code_article = ?";
         try (Connection connection = DatabaseConfig.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {

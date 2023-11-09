@@ -4,8 +4,10 @@ import java.util.List;
 
 import main.java.model.Article;
 import main.java.model.Cart;
+import main.java.model.Purchase;
 import main.java.repository.ArticleRepository;
 import main.java.repository.CartRepository;
+import main.java.repository.PurchaseRepository;
 
 public class PurchaseService {
     private final CartRepository cartRepository;
@@ -20,14 +22,11 @@ public class PurchaseService {
     }
 
     public void addToCart(String clientCode, String articleCode, int quantity) {
-
-        // Check the availability of the item in the warehouse
         Article article = articleRepository.findArticleByCode(articleCode);
         if (article == null || article.getAvailableQty() < quantity) {
             throw new IllegalArgumentException("This article is out of stock or is missing!");
         }
 
-        // Add the purchase to cart
         Cart cart = cartRepository.findCartByClientCode(clientCode);
         if (cart == null) {
             cart = new Cart();
@@ -44,7 +43,6 @@ public class PurchaseService {
             throw new IllegalArgumentException("Cart is empty!");
         }
 
-        // Doing the purchase
         List<Article> articlesInCart = cart.getArticles();
         for (Article article : articlesInCart) {
             Purchase purchase = new Purchase(clientCode, article.getCodeArticle(), article.getPrice(),
@@ -52,12 +50,11 @@ public class PurchaseService {
             purchaseRepository.savePurchase(purchase);
 
             // Update article available quantity in warehouse
-            article.setAvailableQuantity(article.getAvailableQty() - article.getQuantity());
+            article.setAvailableQty(article.getAvailableQty() - article.getQuantity());
             articleRepository.updateArticle(article);
         }
 
-        // Clear the cart
         cart.clearCart();
-        cartRepository.updateCart();
+        cartRepository.updateCart(cart);
     }
 }

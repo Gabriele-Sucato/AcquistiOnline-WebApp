@@ -22,43 +22,35 @@ public class PurchaseController {
     }
 
     public void processPurchase(String clientCode, List<Article> articles, String paymentType) {
-
-        // verify if client got a cart
         Cart cart = cartRepository.findCartByClientCode(clientCode);
         if (cart == null) {
             System.out.println("The client's cart is empty!");
             return;
         }
 
-        // verify the availability in warehouse
         for (Article article : articles) {
             Article storedArticle = articleRepository.findArticleByCode(article.getCodeArticle());
             if (storedArticle == null || storedArticle.getAvailableQty() < article.getQuantity()) {
-                System.out.println("This article" + article.getNameArticle() + "is not available");
+                System.out.println("This article " + article.getArticleName() + " is not available");
                 return;
             }
         }
 
-        // calculate total amount
         double totalAmount = calculateTotalAmount(cart.getArticles());
 
-        // create and save the purchase
         Purchase purchase = new Purchase();
         purchase.setClientCode(clientCode);
         purchase.setPaymentType(paymentType);
         purchase.setPurchaseQty(cart.getArticles().size());
         purchaseRepository.savePurchase(purchase);
 
-        // update available quantity in warehouse to purchased articles
         updateStockQuantity(articles);
 
-        // clear the cart
         cartRepository.clearCart(clientCode);
 
-        System.out.println("Congratualtions!!! Purchase completed! Total: ", totalAmount);
+        System.out.println("Congratulations!!! Purchase completed! Total: " + totalAmount);
     }
 
-    // private method that can calculate Total amount
     private double calculateTotalAmount(List<Article> articles) {
         double totalAmount = 0;
 
@@ -70,7 +62,7 @@ public class PurchaseController {
 
     private void updateStockQuantity(List<Article> articles) {
         for (Article article : articles) {
-            Article storedArticle = articleRepository.findArticleByCode(article.getcodeArticle());
+            Article storedArticle = articleRepository.findArticleByCode(article.getCodeArticle());
             if (storedArticle != null) {
                 storedArticle.setAvailableQty(storedArticle.getAvailableQty() - article.getQuantity());
                 articleRepository.updateArticle(storedArticle);
