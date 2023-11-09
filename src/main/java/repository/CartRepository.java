@@ -17,6 +17,8 @@ public interface CartRepository {
 
     public void clearCart();
 
+    public List<Article> listArticle();
+    
     public void listArticle(List<Article> articles);
 
     public Cart findCartByClientCode(String clientCode);
