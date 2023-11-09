@@ -5,7 +5,7 @@ import java.util.List;
 
 import main.java.model.Client;
 
-public class HandleClientRepo implements ClientRepository {
+public class ClientRepoClass implements ClientRepository {
     private List<Client> clients = new ArrayList<>();
 
     @Override
