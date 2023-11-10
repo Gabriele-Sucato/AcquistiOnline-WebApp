@@ -1,5 +1,6 @@
 import java.util.List;
 
+
 import main.java.config.AppConfig;
 import main.java.controller.PurchaseController;
 import main.java.model.Article;
