@@ -1,12 +1,13 @@
 import java.util.List;
 
+import main.java.config.AppConfig;
 import main.java.controller.PurchaseController;
 import main.java.model.Article;
-import main.java.repository.ArticleRepository;
-import main.java.repository.CartRepository;
-import main.java.repository.ClientRepository;
-import main.java.repository.PurchaseRepository;
-import main.java.repository.WarehouseRepository;
+import main.java.repository.interfaces.ArticleRepository;
+import main.java.repository.interfaces.CartRepository;
+import main.java.repository.interfaces.ClientRepository;
+import main.java.repository.interfaces.PurchaseRepository;
+import main.java.repository.interfaces.WarehouseRepository;
 import main.java.service.PurchaseService;
 
 public class Main {
@@ -24,12 +25,12 @@ public class Main {
             WarehouseRepository warehouseRepository = appConfig.getWarehouseRepository();
 
             // Initialize controller and service
-            PurchaseController purchaseController = new PurchaseController(
+            PurchaseController purchaseController = appConfig.purchaseController(
                     articleRepository,
                     cartRepository,
                     purchaseRepository);
 
-            PurchaseService purchaseService = new PurchaseService(
+            PurchaseService purchaseService = appConfig.purchaseService(
                     cartRepository,
                     articleRepository,
                     purchaseRepository);
@@ -47,7 +48,7 @@ public class Main {
             String paymentType = "Credit Card";
 
             // Do the purchase
-            purchaseController.processPurchase(clientCode, articles, paymentType);
+            purchaseController.processPurchase(clientCode, paymentType, articles);
 
         } catch (Exception e) {
             e.printStackTrace();

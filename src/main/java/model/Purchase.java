@@ -6,6 +6,7 @@ public class Purchase {
     private String articleCode;
     private double unitPrice;
     private int purchaseQty;
+    private String paymentType;
 
     public Purchase(int operationCode, String clientCode, String articleCode, double unitPrice, int purchaseQty) {
         this.operationCode = operationCode;
@@ -13,6 +14,16 @@ public class Purchase {
         this.articleCode = articleCode;
         this.unitPrice = unitPrice;
         this.purchaseQty = purchaseQty;
+    }
+
+    public Purchase(String clientCode, String articleCode, double unitPrice, int purchaseQty) {
+        this.clientCode = clientCode;
+        this.articleCode = articleCode;
+        this.unitPrice = unitPrice;
+        this.purchaseQty = purchaseQty;
+    }
+
+    public Purchase() {
     }
 
     public int getOperationCode() {
@@ -53,6 +64,14 @@ public class Purchase {
 
     public void setPurchaseQty(int purchaseQty) {
         this.purchaseQty = purchaseQty;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
     }
 
     @Override

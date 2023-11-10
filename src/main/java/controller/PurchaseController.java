@@ -5,14 +5,14 @@ import java.util.List;
 import main.java.model.Article;
 import main.java.model.Cart;
 import main.java.model.Purchase;
-import main.java.repository.ArticleRepository;
-import main.java.repository.CartRepository;
-import main.java.repository.PurchaseRepository;
+import main.java.repository.interfaces.ArticleRepository;
+import main.java.repository.interfaces.CartRepository;
+import main.java.repository.interfaces.PurchaseRepository;
 
 public class PurchaseController {
-    private ArticleRepository articleRepository;
-    private CartRepository cartRepository;
-    private PurchaseRepository purchaseRepository;
+    private final ArticleRepository articleRepository;
+    private final CartRepository cartRepository;
+    private final PurchaseRepository purchaseRepository;
 
     public PurchaseController(ArticleRepository articleRepository, CartRepository cartRepository,
             PurchaseRepository purchaseRepository) {
@@ -21,27 +21,29 @@ public class PurchaseController {
         this.purchaseRepository = purchaseRepository;
     }
 
-    public void processPurchase(String clientCode, List<Article> articles, String paymentType) {
+    public void processPurchase(String clientCode, String paymentType, List<Article> articles) {
         Cart cart = cartRepository.findCartByClientCode(clientCode);
-        if (cart == null) {
+        if (cart == null || cart.getArticles().isEmpty()) {
             System.out.println("The client's cart is empty!");
             return;
         }
 
+        articles = cart.getArticles();
         for (Article article : articles) {
             Article storedArticle = articleRepository.findArticleByCode(article.getCodeArticle());
-            if (storedArticle == null || storedArticle.getAvailableQty() < article.getQuantity()) {
+            if (storedArticle == null || storedArticle.getAvailableQty() < article.getAvailableQty()) {
                 System.out.println("This article " + article.getArticleName() + " is not available");
                 return;
             }
         }
 
-        double totalAmount = calculateTotalAmount(cart.getArticles());
+        double totalAmount = calculateTotalAmount(articles);
 
         Purchase purchase = new Purchase();
         purchase.setClientCode(clientCode);
         purchase.setPaymentType(paymentType);
-        purchase.setPurchaseQty(cart.getArticles().size());
+        purchase.setPurchaseQty(articles.size());
+
         purchaseRepository.savePurchase(purchase);
 
         updateStockQuantity(articles);
@@ -55,7 +57,7 @@ public class PurchaseController {
         double totalAmount = 0;
 
         for (Article article : articles) {
-            totalAmount += article.getPrice() * article.getQuantity();
+            totalAmount += article.getPrice() * article.getAvailableQty();
         }
         return totalAmount;
     }
@@ -64,7 +66,7 @@ public class PurchaseController {
         for (Article article : articles) {
             Article storedArticle = articleRepository.findArticleByCode(article.getCodeArticle());
             if (storedArticle != null) {
-                storedArticle.setAvailableQty(storedArticle.getAvailableQty() - article.getQuantity());
+                storedArticle.setAvailableQty(storedArticle.getAvailableQty() - article.getAvailableQty());
                 articleRepository.updateArticle(storedArticle);
             }
         }

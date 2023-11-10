@@ -1,4 +1,4 @@
-package main.java.repository;
+package main.java.repository.repoClasses;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import main.java.config.DatabaseConfig;
 import main.java.model.Warehouse;
+import main.java.repository.interfaces.WarehouseRepository;
 
 public class WarehouseRepoClass implements WarehouseRepository {
 

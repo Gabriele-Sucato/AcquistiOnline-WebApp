@@ -4,43 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cart {
-    private List<Article> articles = new ArrayList<>();
-    private String nameCl;
-    private String lastnameCl;
+    private String codeClient;
     private String paymentMethod;
-    private String nameArticle;
-    private int quantity;
-    private double priceSingle;
-    private double priceTot;
+    private List<Article> articles;
 
-    public Cart(String nameCl, String lastnameCl, String paymentMethod, String nameArticle, int quantity,
-            double priceSingle, double priceTot) {
-        this.nameCl = nameCl;
-        this.lastnameCl = lastnameCl;
-        this.paymentMethod = paymentMethod;
-        this.nameArticle = nameArticle;
-        this.quantity = quantity;
-        this.priceSingle = priceSingle;
-        this.priceTot = priceTot;
+    public String getCodeClient() {
+        return codeClient;
     }
 
-    public Cart() {
-    }
-
-    public String getNameCl() {
-        return nameCl;
-    }
-
-    public void setNameCl(String nameCl) {
-        this.nameCl = nameCl;
-    }
-
-    public String getLastnameCl() {
-        return lastnameCl;
-    }
-
-    public void setLastnameCl(String lastnameCl) {
-        this.lastnameCl = lastnameCl;
+    public void setCodeClient(String codeClient) {
+        this.codeClient = codeClient;
     }
 
     public String getPaymentMethod() {
@@ -51,56 +24,74 @@ public class Cart {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getNameArticle() {
-        return nameArticle;
+    public List<Article> getArticles() {
+        return articles;
     }
 
-    public void setNameArticle(String nameArticle) {
-        this.nameArticle = nameArticle;
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public Cart(String codeClient, String paymentMethod, List<Article> articles) {
+        this.codeClient = codeClient;
+        this.paymentMethod = paymentMethod;
+        this.articles = articles;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public Cart() {
     }
 
-    public double getPriceSingle() {
-        return priceSingle;
-    }
+    public void addToCart(Article article, int quantity) {
+        if (articles == null) {
+            articles = new ArrayList<>();
+        }
 
-    public void setPriceSingle(double priceSingle) {
-        this.priceSingle = priceSingle;
-    }
-
-    public double getPriceTot() {
-        return priceTot;
-    }
-
-    public void setPriceTot(double priceTot) {
-        this.priceTot = priceTot;
-    }
-
-    public void addArticle(Article article, int quantity) {
-        for (Article exArticle : articles) {
-            if (exArticle.getNameArticle().equals(article.getNameArticle())) {
-                {
-
-                }
-            }
+        // Verifica se l'articolo è già presente nel carrello
+        Article existingArticle = findArticleInCart(article);
+        if (existingArticle != null) {
+            // Se presente, aggiorna la quantità
+            existingArticle.setAvailableQty(existingArticle.getAvailableQty() + quantity);
+        } else {
+            // Altrimenti, aggiungi l'articolo al carrello
+            Article newArticle = new Article(article.getCodeArticle(), article.getArticleName(),
+                    article.getPrice(), article.getDescription(), quantity);
+            articles.add(newArticle);
         }
     }
 
-    @Override
-    public String toString() {
-        return "Cart [nameCl=" + nameCl + ", lastnameCl=" + lastnameCl + ", paymentMethod=" + paymentMethod
-                + ", nameArticle=" + nameArticle + ", quantity=" + quantity + ", priceSingle=" + priceSingle
-                + ", priceTot=" + priceTot + "]";
+    public void removeFromCart(Article article) {
+        if (articles != null) {
+            // Rimuovi l'articolo dal carrello
+            articles.removeIf(a -> a.getCodeArticle().equals(article.getCodeArticle()));
+        }
     }
 
-    public static void main(String[] args) {
+    public void clearCart() {
+        // Svuota completamente il carrello
+        if (articles != null) {
+            articles.clear();
+        }
+    }
 
+    // Aggiunta del metodo findArticleInCart per cercare un articolo nel carrello
+    private Article findArticleInCart(Article article) {
+        if (articles != null) {
+            for (Article cartArticle : articles) {
+                if (cartArticle.getCodeArticle().equals(article.getCodeArticle())) {
+                    return cartArticle;
+                }
+            }
+        }
+        return null;
+    }
+
+    // Aggiunta del metodo toString
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "codeClient='" + codeClient + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", articles=" + articles +
+                '}';
     }
 }

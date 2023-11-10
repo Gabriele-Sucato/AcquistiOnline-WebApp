@@ -1,4 +1,4 @@
-package main.java.repository;
+package main.java.repository.interfaces;
 
 import main.java.model.Warehouse;
 

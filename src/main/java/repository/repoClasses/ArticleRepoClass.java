@@ -1,18 +1,41 @@
-package main.java.repository;
+package main.java.repository.repoClasses;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import main.java.config.DatabaseConfig;
 import main.java.model.Article;
+import main.java.repository.interfaces.ArticleRepository;
 
 public class ArticleRepoClass implements ArticleRepository {
 
     private Map<String, Article> articles = new HashMap<>();
+
+    @Override
+    public List<Article> getAllArticles() {
+        List<Article> articles = new ArrayList<>();
+        String query = "SELECT * FROM articles";
+
+        try (Connection connection = DatabaseConfig.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Article article = mapResultSetToArticle(resultSet);
+                articles.add(article);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return articles;
+    }
 
     @Override
     public Article findArticleByCode(String code) {
@@ -76,4 +99,15 @@ public class ArticleRepoClass implements ArticleRepository {
             e.printStackTrace();
         }
     }
+
+    private Article mapResultSetToArticle(ResultSet resultSet) throws SQLException {
+        Article article = new Article();
+        article.setCodeArticle(resultSet.getString("code_article"));
+        article.setArticleName(resultSet.getString("article_name"));
+        article.setPrice(resultSet.getDouble("price"));
+        article.setDescription(resultSet.getString("description"));
+        article.setAvailableQty(resultSet.getInt("available_qty"));
+        return article;
+    }
+
 }

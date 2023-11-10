@@ -5,9 +5,9 @@ import java.util.List;
 import main.java.model.Article;
 import main.java.model.Cart;
 import main.java.model.Purchase;
-import main.java.repository.ArticleRepository;
-import main.java.repository.CartRepository;
-import main.java.repository.PurchaseRepository;
+import main.java.repository.interfaces.ArticleRepository;
+import main.java.repository.interfaces.CartRepository;
+import main.java.repository.interfaces.PurchaseRepository;
 
 public class PurchaseService {
     private final CartRepository cartRepository;
@@ -46,11 +46,11 @@ public class PurchaseService {
         List<Article> articlesInCart = cart.getArticles();
         for (Article article : articlesInCart) {
             Purchase purchase = new Purchase(clientCode, article.getCodeArticle(), article.getPrice(),
-                    article.getQuantity());
+                    article.getAvailableQty());
             purchaseRepository.savePurchase(purchase);
 
             // Update article available quantity in warehouse
-            article.setAvailableQty(article.getAvailableQty() - article.getQuantity());
+            article.setAvailableQty(article.getAvailableQty() - article.getAvailableQty());
             articleRepository.updateArticle(article);
         }
 

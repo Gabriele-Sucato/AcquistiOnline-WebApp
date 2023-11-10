@@ -1,4 +1,4 @@
-package main.java.repository;
+package main.java.repository.repoClasses;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,7 @@ import java.util.List;
 
 import main.java.config.DatabaseConfig;
 import main.java.model.Purchase;
+import main.java.repository.interfaces.PurchaseRepository;
 
 public class PurchaseRepoClass implements PurchaseRepository {
 

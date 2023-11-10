@@ -11,6 +11,9 @@ public class Warehouse {
         this.articleCode = articleCode;
     }
 
+    public Warehouse() {
+    }
+
     public int getId() {
         return id;
     }

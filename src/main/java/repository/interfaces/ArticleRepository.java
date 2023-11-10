@@ -1,8 +1,12 @@
-package main.java.repository;
+package main.java.repository.interfaces;
+
+import java.util.List;
 
 import main.java.model.Article;
 
 public interface ArticleRepository {
+
+        List<Article> getAllArticles();
 
         Article findArticleByCode(String code);
 

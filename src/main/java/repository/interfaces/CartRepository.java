@@ -1,4 +1,4 @@
-package main.java.repository;
+package main.java.repository.interfaces;
 
 import java.util.List;
 
@@ -17,8 +17,10 @@ public interface CartRepository {
 
     public void clearCart();
 
+    public void clearCart(String code_client);
+
     public List<Article> listArticle();
-    
+
     public void listArticle(List<Article> articles);
 
     public Cart findCartByClientCode(String clientCode);

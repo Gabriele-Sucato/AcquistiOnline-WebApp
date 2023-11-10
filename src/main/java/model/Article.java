@@ -2,21 +2,25 @@ package main.java.model;
 
 public class Article {
     private String codeArticle;
-    private String nameArticle;
+    private String articleName;
     private double price;
     private String description;
     private int availableQty;
 
-    public Article(String codeArticle, String nameArticle, double price, String description, int availableQty) {
+    // Costruttore vuoto
+    public Article() {
+    }
+
+    // Costruttore con tutti i campi
+    public Article(String codeArticle, String articleName, double price, String description, int availableQty) {
         this.codeArticle = codeArticle;
-        this.nameArticle = nameArticle;
+        this.articleName = articleName;
         this.price = price;
         this.description = description;
         this.availableQty = availableQty;
     }
 
-    public Article() {
-    }
+    // Metodi getter e setter
 
     public String getCodeArticle() {
         return codeArticle;
@@ -26,12 +30,12 @@ public class Article {
         this.codeArticle = codeArticle;
     }
 
-    public String getNameArticle() {
-        return nameArticle;
+    public String getArticleName() {
+        return articleName;
     }
 
-    public void setNameArticle(String nameArticle) {
-        this.nameArticle = nameArticle;
+    public void setArticleName(String articleName) {
+        this.articleName = articleName;
     }
 
     public double getPrice() {
@@ -58,11 +62,13 @@ public class Article {
         this.availableQty = availableQty;
     }
 
+    // Altri metodi di classe o di istanza, se necessario
+
     @Override
     public String toString() {
         return "Article{" +
                 "codeArticle='" + codeArticle + '\'' +
-                ", nameArticle='" + nameArticle + '\'' +
+                ", articleName='" + articleName + '\'' +
                 ", price=" + price +
                 ", description='" + description + '\'' +
                 ", availableQty=" + availableQty +
