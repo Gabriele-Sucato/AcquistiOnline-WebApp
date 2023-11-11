@@ -21,7 +21,7 @@ public class PurchaseService {
         this.purchaseRepository = purchaseRepository;
     }
 
-    public void addToCart(String clientCode, String articleCode, int quantity) {
+    public void addToCart(String clientCode, String articleCode, String paymentType, int quantity, double unitPrice) {
         Article article = articleRepository.findArticleByCode(articleCode);
         if (article == null || article.getAvailableQty() < quantity) {
             throw new IllegalArgumentException("This article is out of stock or is missing!");
@@ -34,6 +34,14 @@ public class PurchaseService {
             cartRepository.saveCart(cart);
         }
         cart.addToCart(article, quantity);
+
+        Purchase purchase = new Purchase(clientCode, articleCode, paymentType, unitPrice, quantity);
+        purchaseRepository.savePurchase(purchase);
+
+        // Update article available quantity in warehouse
+        article.setAvailableQty(article.getAvailableQty() - quantity);
+        articleRepository.updateArticle(article);
+
         cartRepository.updateCart(cart);
     }
 

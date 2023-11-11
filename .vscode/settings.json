@@ -1,0 +1,7 @@
+{
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar",
+    "server/lib/javax.servlet-api-4.0.1.jar",
+    "server/lib/mysql-connector-j-8.2.0.jar"
+  ]
+}

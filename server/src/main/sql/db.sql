@@ -1,5 +1,5 @@
 
- CREATE TABLE IF NOT EXISTS clients (
+CREATE TABLE IF NOT EXISTS clients (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code_client VARCHAR(4) NOT NULL UNIQUE,
     name VARCHAR(50) NOT NULL,
@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS purchases (
     code_article VARCHAR(4) NOT NULL,
     payment_type VARCHAR(20),
     purchase_qty SMALLINT NOT NULL,
+    unit_price DECIMAL(8, 2) NOT NULL,
     FOREIGN KEY (code_client) REFERENCES clients(code_client),
     FOREIGN KEY (code_article) REFERENCES articles(code_article)
 );
@@ -41,6 +42,26 @@ CREATE TABLE IF NOT EXISTS carts (
     FOREIGN KEY (code_article) REFERENCES articles(code_article)
 );
 
+-- Insert a client
+INSERT INTO clients (code_client, name, last_name) VALUES ('123', 'Gianni', 'Pippo');
+
+-- Insert some articles
+INSERT INTO articles (code_article, article_name, price, description, available_qty) VALUES 
+  ('ABC', 'Article 1', 19.99, 'Description article 1', 50),
+  ('DEF', 'Article 2', 29.99, 'Description article 2', 30),
+  ('GHI', 'Article 3', 9.99, 'Description article 3', 100);
+
+-- Insert some datas in carts
+INSERT INTO carts (code_client, payment_method, article_qty, code_article) VALUES 
+  ('123', 'Credit Card', 2, 'ABC'),
+  ('123', 'Prepaid Card', 1, 'DEF');
+  
+-- Insert some datas in warehouses
+INSERT INTO warehouses (available_qty, code_article) VALUES 
+  (20, 'ABC'),
+  (10, 'DEF'),
+  (50, 'GHI');
+  
 
 
 -- CREATE VIEW Carrello AS

@@ -15,7 +15,7 @@ public class PurchaseRepoClass implements PurchaseRepository {
 
     @Override
     public void savePurchase(Purchase purchase) {
-        String query = "INSERT INTO purchases (code_client, code_article, payment_type, purchase_qty) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO purchases (code_client, code_article, payment_type, purchase_qty, unit_price) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConfig.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -24,6 +24,7 @@ public class PurchaseRepoClass implements PurchaseRepository {
             preparedStatement.setString(2, purchase.getArticleCode());
             preparedStatement.setString(3, purchase.getPaymentType());
             preparedStatement.setInt(4, purchase.getPurchaseQty());
+            preparedStatement.setDouble(5, purchase.getUnitPrice());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

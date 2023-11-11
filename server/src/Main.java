@@ -1,6 +1,5 @@
 import java.util.List;
 
-
 import main.java.config.AppConfig;
 import main.java.controller.PurchaseController;
 import main.java.model.Article;
@@ -41,12 +40,22 @@ public class Main {
             String articleCode = "ABC";
             int quantity = 2;
 
+            List<Article> allArticles = articleRepository.getAllArticles();
+            double unitPrice = 1.0;
+
+            for (Article article : allArticles) {
+                if (article.getCodeArticle().equals(articleCode)) {
+                    unitPrice = article.getPrice();
+                    break;
+                }
+            }
+
+            String paymentType = "Credit Card";
             // Add To Cart
-            purchaseService.addToCart(clientCode, articleCode, quantity);
+            purchaseService.addToCart(clientCode, articleCode, paymentType, quantity, unitPrice);
 
             // Usage of PurchaseController
             List<Article> articles = articleRepository.getAllArticles();
-            String paymentType = "Credit Card";
 
             // Do the purchase
             purchaseController.processPurchase(clientCode, paymentType, articles);
