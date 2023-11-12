@@ -1,74 +1,68 @@
 package main.java.controller;
 
+import main.java.model.Article;
+import main.java.model.Purchase;
+import main.java.service.PurchaseService;
+
 import java.util.List;
 
-import main.java.model.Article;
-import main.java.model.Cart;
-import main.java.model.Purchase;
-import main.java.repository.interfaces.ArticleRepository;
-import main.java.repository.interfaces.CartRepository;
-import main.java.repository.interfaces.PurchaseRepository;
-
 public class PurchaseController {
-    private final ArticleRepository articleRepository;
-    private final CartRepository cartRepository;
-    private final PurchaseRepository purchaseRepository;
+    private final PurchaseService purchaseService;
 
-    public PurchaseController(ArticleRepository articleRepository, CartRepository cartRepository,
-            PurchaseRepository purchaseRepository) {
-        this.articleRepository = articleRepository;
-        this.cartRepository = cartRepository;
-        this.purchaseRepository = purchaseRepository;
+    public PurchaseController(PurchaseService purchaseService) {
+        this.purchaseService = purchaseService;
     }
 
-    public void processPurchase(String clientCode, String paymentType, List<Article> articles) {
-        Cart cart = cartRepository.findCartByClientCode(clientCode);
-        if (cart == null || cart.getArticles().isEmpty()) {
-            System.out.println("The client's cart is empty!");
-            return;
+    public void addToCart(String clientCode, String articleCode, String paymentType, int quantity, double unitPrice) {
+        try {
+            purchaseService.addToCart(clientCode, articleCode, paymentType, quantity, unitPrice);
+            System.out.println("Article added to cart successfully!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
+    }
 
-        articles = cart.getArticles();
-        for (Article article : articles) {
-            Article storedArticle = articleRepository.findArticleByCode(article.getCodeArticle());
-            if (storedArticle == null || storedArticle.getAvailableQty() < article.getAvailableQty()) {
-                System.out.println("This article " + article.getArticleName() + " is not available");
-                return;
+    public void checkout(String clientCode) {
+        try {
+            purchaseService.checkout(clientCode);
+            System.out.println("Checkout successful!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void getCartDetails(String clientCode) {
+        try {
+            List<Article> cartDetails = purchaseService.getCartDetails(clientCode).getArticles();
+            if (cartDetails == null || cartDetails.isEmpty()) {
+                System.out.println("The client's cart is empty!");
+            } else {
+                System.out.println("Cart details:\n" + cartDetails);
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-
-        double totalAmount = calculateTotalAmount(articles);
-
-        Purchase purchase = new Purchase();
-        purchase.setClientCode(clientCode);
-        purchase.setPaymentType(paymentType);
-        purchase.setPurchaseQty(articles.size());
-
-        purchaseRepository.savePurchase(purchase);
-
-        updateStockQuantity(articles);
-
-        cartRepository.clearCart(clientCode);
-
-        System.out.println("Congratulations!!! Purchase completed! Total: " + totalAmount);
     }
 
-    private double calculateTotalAmount(List<Article> articles) {
-        double totalAmount = 0;
-
-        for (Article article : articles) {
-            totalAmount += article.getPrice() * article.getAvailableQty();
+    public void processPurchase(String clientCode, String paymentType, List<String> articleCodes) {
+        try {
+            purchaseService.processPurchase(clientCode, paymentType, articleCodes);
+            System.out.println("Purchase completed successfully!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-        return totalAmount;
     }
 
-    private void updateStockQuantity(List<Article> articles) {
-        for (Article article : articles) {
-            Article storedArticle = articleRepository.findArticleByCode(article.getCodeArticle());
-            if (storedArticle != null) {
-                storedArticle.setAvailableQty(storedArticle.getAvailableQty() - article.getAvailableQty());
-                articleRepository.updateArticle(storedArticle);
+    public void getAllPurchases(String clientCode) {
+        try {
+            List<Purchase> purchases = purchaseService.getAllPurchases(clientCode);
+            if (purchases == null || purchases.isEmpty()) {
+                System.out.println("The client has no purchases!");
+            } else {
+                System.out.println("All purchases:\n" + purchases);
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 }
