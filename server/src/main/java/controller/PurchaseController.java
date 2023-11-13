@@ -2,6 +2,9 @@ package main.java.controller;
 
 import main.java.model.Article;
 import main.java.model.Purchase;
+import main.java.repository.interfaces.ArticleRepository;
+import main.java.repository.interfaces.CartRepository;
+import main.java.repository.interfaces.PurchaseRepository;
 import main.java.service.PurchaseService;
 
 import java.util.List;
@@ -11,6 +14,13 @@ public class PurchaseController {
 
     public PurchaseController(PurchaseService purchaseService) {
         this.purchaseService = purchaseService;
+    }
+
+    public PurchaseController(
+            ArticleRepository articleRepository,
+            CartRepository cartRepository,
+            PurchaseRepository purchaseRepository) {
+        this.purchaseService = new PurchaseService(cartRepository, articleRepository, purchaseRepository);
     }
 
     public void addToCart(String clientCode, String articleCode, String paymentType, int quantity, double unitPrice) {
