@@ -1,4 +1,7 @@
+
+// Main.java
 import java.util.List;
+import java.util.stream.Collectors;
 
 import main.java.config.AppConfig;
 import main.java.controller.PurchaseController;
@@ -14,17 +17,17 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            // Init AppConfig
+            // AppConfig init
             AppConfig appConfig = new AppConfig();
 
-            // Initialize repositories and service
+            // Repositories and service init
             ArticleRepository articleRepository = appConfig.getArticleRepository();
             CartRepository cartRepository = appConfig.getCartRepository();
             ClientRepository clientRepository = appConfig.getClientRepository();
             PurchaseRepository purchaseRepository = appConfig.getPurchaseRepository();
             WarehouseRepository warehouseRepository = appConfig.getWarehouseRepository();
 
-            // Initialize controller and service
+            // Service and Controller init
             PurchaseController purchaseController = appConfig.purchaseController(
                     articleRepository,
                     cartRepository,
@@ -35,7 +38,7 @@ public class Main {
                     articleRepository,
                     purchaseRepository);
 
-            // Usage of PurchaseService
+            // PurchaseService usage
             String clientCode = "123";
             String articleCode = "ABC";
             int quantity = 2;
@@ -51,17 +54,24 @@ public class Main {
             }
 
             String paymentType = "Credit Card";
-            // Add To Cart
+            // addToCart
             purchaseService.addToCart(clientCode, articleCode, paymentType, quantity, unitPrice);
 
-            // Usage of PurchaseController
-            List<Article> articles = articleRepository.getAllArticles();
-
-            // Do the purchase
-            purchaseController.processPurchase(clientCode, paymentType, articles);
+            // PurchaseController usage
+            List<String> articleCodes = extractArticleCodes(allArticles);
+            // Esegui l'acquisto
+            purchaseController.processPurchase(clientCode, paymentType, articleCodes);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private static List<String> extractArticleCodes(List<Article> articles) {
+        // retrieve article codes from list of article
+        return articles.stream()
+                .map(Article::getCodeArticle)
+                .collect(Collectors.toList());
+    }
+
 }
