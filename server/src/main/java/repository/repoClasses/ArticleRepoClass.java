@@ -5,17 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import main.java.config.DatabaseConfig;
 import main.java.model.Article;
 import main.java.repository.interfaces.ArticleRepository;
 
 public class ArticleRepoClass implements ArticleRepository {
-
-    private Map<String, Article> articles = new HashMap<>();
 
     @Override
     public List<Article> getAllArticles() {
@@ -46,12 +42,7 @@ public class ArticleRepoClass implements ArticleRepository {
             preparedStatement.setString(1, code);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    Article article = new Article();
-                    article.setCodeArticle(resultSet.getString("code_article"));
-                    article.setArticleName(resultSet.getString("article_name"));
-                    article.setPrice(resultSet.getDouble("price"));
-                    article.setDescription(resultSet.getString("description"));
-                    article.setAvailableQty(resultSet.getInt("available_qty"));
+                    Article article = mapResultSetToArticle(resultSet);
                     return article;
                 }
             }
@@ -109,5 +100,4 @@ public class ArticleRepoClass implements ArticleRepository {
         article.setAvailableQty(resultSet.getInt("available_qty"));
         return article;
     }
-
 }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import main.java.repository.interfaces.CartRepository;
 
 public class CartRepoClass implements CartRepository {
 
-    private Map<String, Cart> carts = new HashMap<String, Cart>();
+    private Map<String, Cart> carts = Collections.synchronizedMap(new HashMap<>());
 
     @Override
     public void addItem(Article article, int quantity, int id) {
@@ -123,6 +124,22 @@ public class CartRepoClass implements CartRepository {
         Cart cart = carts.computeIfAbsent(article.getCodeArticle(), k -> new Cart());
         cart.addToCart(article, quantity);
         carts.put(article.getCodeArticle(), cart);
+
+        // db implementation
+        String query = "INSERT INTO carts (code_client, payment_method, article_qty, code_article) VALUES (?, ?, ?, ?)";
+        try (Connection connection = DatabaseConfig.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, cart.getCodeClient());
+            preparedStatement.setString(2, cart.getPaymentMethod());
+            preparedStatement.setInt(3, quantity);
+            preparedStatement.setString(4, article.getCodeArticle());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -131,6 +148,21 @@ public class CartRepoClass implements CartRepository {
         // Puoi popolare la lista con gli articoli presenti nel carrello
         for (Cart cart : carts.values()) {
             articles.addAll(cart.getArticles());
+        }
+
+        // db implementation
+        String query = "SELECT * FROM carts";
+        try (Connection connection = DatabaseConfig.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Article article = new Article();
+                article.setCodeArticle(resultSet.getString("code_article"));
+                articles.add(article);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

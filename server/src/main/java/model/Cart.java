@@ -1,12 +1,15 @@
 package main.java.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Cart {
     private String codeClient;
     private String paymentMethod;
     private List<Article> articles;
+    private Map<String, Integer> articleQuantities;
 
     public String getCodeClient() {
         return codeClient;
@@ -36,6 +39,7 @@ public class Cart {
         this.codeClient = codeClient;
         this.paymentMethod = paymentMethod;
         this.articles = articles;
+        this.articleQuantities = new HashMap<>();
     }
 
     public Cart() {
@@ -48,6 +52,12 @@ public class Cart {
 
         // Verifica se l'articolo è già presente nel carrello
         Article existingArticle = findArticleInCart(article);
+
+        // Verifica la disponibilità dell'articolo in magazzino
+        if (article.getAvailableQty() < quantity) {
+            throw new IllegalArgumentException("Not enough stock available for the selected quantity.");
+        }
+
         if (existingArticle != null) {
             // Se presente, aggiorna la quantità
             existingArticle.setAvailableQty(existingArticle.getAvailableQty() + quantity);
@@ -83,6 +93,15 @@ public class Cart {
             }
         }
         return null;
+    }
+
+    public int getQuantityByArticle(Article article) {
+        return articleQuantities.getOrDefault(article.getCodeArticle(), 0);
+    }
+
+    public double getSubtotalByArticle(Article article) {
+        int quantity = getQuantityByArticle(article);
+        return article.getPrice() * quantity;
     }
 
     // Aggiunta del metodo toString

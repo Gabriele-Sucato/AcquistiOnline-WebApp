@@ -57,7 +57,7 @@ public class PurchaseRepoClass implements PurchaseRepository {
 
     @Override
     public void updatePurchase(Purchase purchase) {
-        String query = "UPDATE purchases SET code_article = ?, payment_type = ?, purchase_qty = ? WHERE code_client = ?";
+        String query = "UPDATE purchases SET code_article = ?, payment_type = ?, purchase_qty = ? WHERE operation_code = ?";
 
         try (Connection connection = DatabaseConfig.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -65,7 +65,7 @@ public class PurchaseRepoClass implements PurchaseRepository {
             preparedStatement.setString(1, purchase.getArticleCode());
             preparedStatement.setString(2, purchase.getPaymentType());
             preparedStatement.setInt(3, purchase.getPurchaseQty());
-            preparedStatement.setString(4, purchase.getClientCode());
+            preparedStatement.setInt(4, purchase.getOperationCode());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

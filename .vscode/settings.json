@@ -2,6 +2,7 @@
   "java.project.referencedLibraries": [
     "lib/**/*.jar",
     "server/lib/javax.servlet-api-4.0.1.jar",
-    "server/lib/mysql-connector-j-8.2.0.jar"
+    "server/lib/mysql-connector-j-8.2.0.jar",
+    "server/lib/javax.json-1.1.4.jar"
   ]
 }

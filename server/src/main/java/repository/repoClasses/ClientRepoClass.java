@@ -69,16 +69,6 @@ public class ClientRepoClass implements ClientRepository {
 
     @Override
     public void update(Client client) {
-
-        // old implementation
-
-        // for (int i = 0; i < clients.size(); i++) {
-        // if (clients.get(i).getClientCode() == client.getClientCode()) {
-        // clients.set(i, client);
-        // return;
-        // }
-        // }
-
         // DB implementation
         String query = "UPDATE clients SET name=?, last_name=? WHERE code_client=?";
 
@@ -87,9 +77,10 @@ public class ClientRepoClass implements ClientRepository {
 
             preparedStatement.setString(1, client.getName());
             preparedStatement.setString(2, client.getLastName());
-            preparedStatement.setInt(3, client.getClientCode());
+            preparedStatement.setLong(3, client.getClientCode());
 
             preparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -118,19 +109,47 @@ public class ClientRepoClass implements ClientRepository {
     @Override
     public void save(Client client) {
         // DB implementation
-        String query = "INSERT INTO clients (code_client, name, last_name) VALUES (?, ?, ?)";
+        String query = "INSERT INTO clients (name, last_name) VALUES (?, ?, ?)";
 
         try (Connection connection = DatabaseConfig.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query,
+                        PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setInt(1, client.getClientCode());
-            preparedStatement.setString(2, client.getName());
+            preparedStatement.setString(1, client.getName());
             preparedStatement.setString(2, client.getLastName());
 
             preparedStatement.executeUpdate();
+
+            // Ottieni l'ID generato dal database
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int generatedId = generatedKeys.getInt(1);
+                    // Assegna l'ID generato al cliente (se necessario)
+                    client.setClientCode(generatedId);
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Client> getAllClients() {
+        List<Client> clients = new ArrayList<>();
+        String query = "SELECT * FROM clients";
+
+        try (Connection connection = DatabaseConfig.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                clients.add(mapResultSetToClient(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return clients;
     }
 
     // new method

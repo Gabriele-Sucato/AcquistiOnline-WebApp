@@ -14,4 +14,6 @@ public interface ClientRepository {
     void update(Client client);
 
     void delete(int clientCode);
+
+    List<Client> getAllClients();
 }

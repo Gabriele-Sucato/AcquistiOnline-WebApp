@@ -8,24 +8,6 @@ public class Purchase {
     private int purchaseQty;
     private String paymentType;
 
-    public Purchase(int operationCode, String clientCode, String articleCode, String paymentType, double unitPrice,
-            int purchaseQty) {
-        this.operationCode = operationCode;
-        this.clientCode = clientCode;
-        this.articleCode = articleCode;
-        this.paymentType = paymentType;
-        this.unitPrice = unitPrice;
-        this.purchaseQty = purchaseQty;
-    }
-
-    public Purchase(int operationCode, String clientCode, String articleCode, double unitPrice, int purchaseQty) {
-        this.operationCode = operationCode;
-        this.clientCode = clientCode;
-        this.articleCode = articleCode;
-        this.unitPrice = unitPrice;
-        this.purchaseQty = purchaseQty;
-    }
-
     public Purchase(String clientCode, String articleCode, String paymentType, double unitPrice, int purchaseQty) {
         this.clientCode = clientCode;
         this.articleCode = articleCode;
@@ -102,5 +84,4 @@ public class Purchase {
                 ", purchaseQty=" + purchaseQty +
                 '}';
     }
-
 }

@@ -2,6 +2,7 @@ package main.java.filter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -25,11 +26,21 @@ public class CorsFilter implements Filter {
         // trigger on CORS
         httpResponse.setContentType("text/html;charset=UTF-8");
         httpResponse.setHeader("Access-Control-Allow-Origin", "*");
-        httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, UT, DELETE, OPTION");
+        httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         httpResponse.setHeader("Access-Control-Allow-Headers",
                 "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
         // chaining filters
         chain.doFilter(httpRequest, httpResponse);
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // You can initialize the filter if needed
+    }
+
+    @Override
+    public void destroy() {
+        // You can perform cleanup when the filter is destroyed
     }
 }
